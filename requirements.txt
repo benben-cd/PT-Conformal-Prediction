@@ -1,0 +1,14 @@
+# Core numerical and learning stack
+numpy>=1.23
+pandas>=1.5
+scipy>=1.9
+scikit-learn>=1.1
+torch>=1.12
+torchvision>=0.13
+Pillow>=9.0
+tqdm>=4.64
+
+# Plotting utilities used under plt/ and vendored CQR helpers
+matplotlib>=3.5
+plotly>=5.10
+jupyter>=1.0

@@ -1,0 +1,28 @@
+# Python and notebook artifacts
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+.DS_Store
+
+# Virtual environments and editor metadata
+.venv/
+venv/
+env/
+.idea/
+.vscode/
+
+# Local datasets (download according to README and their licenses)
+classification_task/imagenet_val/
+**/datasets/*.csv
+**/datasets/*.data
+**/datasets/blogfeedback/
+**/datasets/facebook/**
+!**/datasets/facebook/README.md
+**/get_meps_data/*.csv
+
+# Learned model checkpoints and transient logs
+*.pt
+*.pth
+*.ckpt
+*.log
