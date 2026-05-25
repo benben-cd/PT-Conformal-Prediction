@@ -291,50 +291,6 @@ Table 5 presentation in the manuscript.
 Plotting notebooks and exported PDFs for the ablation figures are provided
 under `plt/ablation_study/`.
 
-## Release Notes and Known Gaps
-
-The repository records the experiment code and supplied result artifacts for
-the updated manuscript. Before producing a final archival release, the
-following items should be reconciled:
-
-- Add a direct Table 2 reproduction script or an explicitly checked-in
-  consolidated result table.
-- Add a direct consolidated Table 5 exporter/result if that table is expected
-  to be reproducible from one command.
-- Regenerate and include STAR and MEPS outputs for Table 8, or state explicitly
-  that only the BIKE group-coverage example is distributed.
-- Reconcile the hard-coded dataset lists in
-  `ordinary_regression_ablation.py` and `cqr_ablation.py` with the supplied
-  BIKE ablation artifacts.
-- Enable all nine architectures in `interval_stability_cls.py` when
-  regenerating Table 12 from scratch.
-- Confirm the ordinary-regression `p` setting used for Table 2 against the
-  manuscript text; the supplementary Table 6 and Table 7 scripts encode
-  `p = 0.96`, consistent with their table settings.
-
-## Supplied Result Artifacts
-
-The repository includes lightweight result summaries and paper-facing figures:
-
-```text
-classification_task/cvg_len_result/
-classification_task/p_value_result/
-classification_task/std_results/
-cqr/cqr_ablation_result/
-cqr/interval_stability_results.csv
-ordinary_regression_task/ablation_study_result/
-ordinary_regression_task/group_coverage_result/
-ordinary_regression_task/interval_stability_results/
-ordinary_regression_task/larger_bias/
-ordinary_regression_task/pt_result/
-ordinary_regression_task/simulation_ablation/
-sim_local_cp/sigma_interval_stability_summary.csv
-plt/
-```
-
-Raw datasets, ImageNet images, model checkpoints, and local cache files are
-excluded through `.gitignore`.
-
 ## Acknowledgements
 
 The CQR experiments include code adapted from the public CQR implementation:
