@@ -1,167 +1,236 @@
 # Questioning the Coverage-Length Metric in Conformal Prediction
 
-Official experimental code for:
+Experimental code for:
 
-> **Questioning the Coverage-Length Metric in Conformal Prediction: When Shorter Intervals Are Not Better**  
-> Yizhou Min, Yizhou Lu, Lanqi Li, Zhen Zhang, Jiaye Teng  
-> Proceedings of the International Conference on Machine Learning (ICML), 2026
+> **Questioning the Coverage-Length Metric in Conformal Prediction: When Shorter Intervals Are Not Better**
+>
+> Yizhou Min, Yizhou Lu, Lanqi Li, Zhen Zhang, and Jiaye Teng
+>
+> International Conference on Machine Learning (ICML), 2026
 
-The camera-ready manuscript snapshot used to organize this release is available
-at [`icml2026_PCP_camera_ready.pdf`](icml2026_PCP_camera_ready.pdf).
+The current manuscript PDF is included as
+[`icml2026_PCP_camera_ready.pdf`](./icml2026_PCP_camera_ready.pdf).
 
 ## Overview
 
-This repository studies probabilistically transformed conformal prediction
-(PT-VCP / PT-RAPS in the experiment files) and illustrates why interval or set
-size alone can reward uninformative randomization. It contains the experiments
-reported for:
+This repository contains the experimental code used to study a limitation of
+the commonly reported coverage-length metric in conformal prediction. The
+paper introduces **Prejudicial Trick (PT)**, a constructed transformation that
+can make prediction sets shorter while preserving marginal coverage, but at
+the cost of substantial instability across repeated calibrations.
 
-- ImageNet classification with RAPS and PT-RAPS.
-- Ordinary regression on ten benchmark datasets.
-- Conformalized Quantile Regression (CQR).
-- A localized-CP-like regression comparison based on repeatedly fitted
-  conditional scale models.
-- Synthetic, group-coverage, stability, and ablation experiments.
+The experiments cover:
 
-In several older script identifiers, `PCP` denotes the probabilistic
-transformation used for PT-VCP or PT-RAPS in the paper.
+- synthetic regression examples illustrating the misleading improvement in
+  interval length and a no-misspecification failure case;
+- real-data regression comparisons of VCP and PT-VCP;
+- interval stability comparisons among VCP, PT-VCP, and Localized-CP;
+- ImageNet classification comparisons of RAPS and PT-RAPS;
+- CQR and PT-CQR experiments;
+- p-value criteria, group coverage, larger-bias, relaxed-PT, and ablation
+  studies.
+
+In several scripts, the historical variable name `PCP` refers to the
+PT-transformed counterpart of the base conformal method.
+
+## Paper-to-Code Map
+
+| Manuscript item | Experiment | Code and supplied artifacts |
+| --- | --- | --- |
+| Table 1 | Synthetic motivating example | `ordinary_regression_task/simulation_subgaussian.py`; `ordinary_regression_task/simulation_ablation/` |
+| Figure 5 | Synthetic case without misspecification | `ordinary_regression_task/simulation_guassian.py`; `ordinary_regression_task/simulation_ablation/` |
+| Figure 1 | BIKE marginal and group coverage | `ordinary_regression_task/ordinary_regression_cvg.py`, `ordinary_regression_task/group_coverage.py`; `ordinary_regression_task/group_coverage_result/`, `plt/cvg/` |
+| Table 2 | VCP versus PT-VCP on ten regression datasets | Core fitting and evaluation components are in `ordinary_regression_task/`; a consolidated Table 2 exporter/result is not included in this snapshot |
+| Table 3 | Interval Stability for VCP, PT-VCP, and Localized-CP | `ordinary_regression_task/interval_stability.py`, `sim_local_cp/ordinary_regression_sigma_interval_stability.py`; `ordinary_regression_task/interval_stability_results/table3_interval_stability_vcp_ptvcp.csv`, `sim_local_cp/sigma_interval_stability_summary.csv` |
+| Table 4 | RAPS versus PT-RAPS on ImageNet | `classification_task/cvg_len_cls.py`; `classification_task/cvg_len_result/` |
+| Table 5 | CQR versus PT-CQR | Model and evaluation components in `cqr/`; a consolidated Table 5 exporter/result is not included in this snapshot |
+| Table 6 | Relaxed PT-VCP with perturbation rate `epsilon = 0.01` | `ordinary_regression_task/PT_perturbation.py`; `ordinary_regression_task/pt_result/` |
+| Table 7 | Regression experiment with larger bias | `ordinary_regression_task/larger_bias.py`; `ordinary_regression_task/larger_bias/table7_larger_bias_alpha0.1_p0.96.csv` |
+| Table 8 | Group coverage results | `ordinary_regression_task/group_coverage.py`; checked-in results currently cover BIKE only |
+| Tables 9-10 | Classification p-value criteria | `classification_task/p_value_criteria.py`, `classification_task/conformal.py`; `classification_task/p_value_result/` |
+| Table 11 | Interval Stability for CQR and PT-CQR | `cqr/Stability_cqr.py`; `cqr/interval_stability_results.csv` |
+| Table 12 | Interval Stability for RAPS and PT-RAPS | `classification_task/interval_stability_cls.py`; `classification_task/std_results/std_results_cls.csv` |
+| Figures 6-15 | Ablation studies over `p` and misspecification level | `ordinary_regression_task/ordinary_regression_ablation.py`, `cqr/cqr_ablation.py`; `plt/ablation_study/` |
 
 ## Repository Layout
 
 ```text
 .
-|-- icml2026_PCP_camera_ready.pdf
-|-- classification_task/
-|   |-- cvg_len_cls.py                  # ImageNet coverage/set-size comparison
-|   |-- interval_stability_cls.py       # Randomized set-size stability
-|   |-- p_value_criteria.py             # Paper p-value criteria, all classifiers
-|   |-- conformal.py                    # PT-RAPS criteria implementation
-|   |-- conformal_procedure.py          # RAPS/PT-RAPS prediction sets
-|   |-- cvg_len_result/                 # Stored coverage/set-size results
-|   `-- p_value_result/                 # Stored p-value criteria results
-|-- ordinary_regression_task/
-|   |-- ordinary_regression_FitModel.py # Train mean regression networks
-|   |-- ordinary_regression_cvg.py      # Coverage curves
-|   |-- ordinary_regression_ablation.py # Alpha/p/bias ablations
-|   |-- PT_perturbation.py              # PT-VCP results used in the paper
-|   |-- larger_bias.py                  # Larger-bias comparison
-|   |-- group_coverage.py               # Group coverage experiment
-|   |-- interval_stability.py           # Randomization stability
-|   |-- simulation_*.py                 # Synthetic examples
-|   `-- datasets/                       # Loaders and local dataset location
-|-- cqr/
-|   |-- cqr_FitModel.py                 # Train CQR models
-|   |-- cqr_ablation.py                 # CQR ablations
-|   |-- Stability_cqr.py                # CQR stability
-|   |-- cqrfile/                        # Quantile network implementation
-|   `-- nonconformist/                  # CQR conformal utilities
-|-- sim_local_cp/
+|-- classification_task/        # RAPS/PT-RAPS ImageNet experiments
+|   |-- cvg_len_cls.py           # coverage and set-size evaluation (Table 4)
+|   |-- interval_stability_cls.py# classification stability (Table 12)
+|   |-- p_value_criteria.py      # p-value criteria (Tables 9-10)
+|   |-- cvg_len_result/
+|   |-- p_value_result/
+|   `-- std_results/
+|-- cqr/                        # CQR/PT-CQR experiments
+|   |-- cqr_FitModel.py
+|   |-- cqr_ablation.py
+|   |-- Stability_cqr.py         # Table 11
+|   |-- cqr_ablation_result/
+|   `-- interval_stability_results.csv
+|-- ordinary_regression_task/   # VCP/PT-VCP regression experiments
 |   |-- ordinary_regression_FitModel.py
+|   |-- ordinary_regression_ablation.py
+|   |-- ordinary_regression_cvg.py
+|   |-- interval_stability.py   # VCP/PT-VCP part of Table 3
+|   |-- group_coverage.py       # Figure 1 and Table 8
+|   |-- PT_perturbation.py      # Table 6
+|   |-- larger_bias.py          # Table 7
+|   |-- simulation_subgaussian.py
+|   |-- simulation_guassian.py
+|   `-- *_result/               # supplied result tables
+|-- sim_local_cp/               # Localized-CP stability comparison
 |   `-- ordinary_regression_sigma_interval_stability.py
-`-- plt/                                # Plotting notebooks/scripts and figures
+|-- plt/                        # notebooks/scripts and exported figures
+|-- requirements.txt
+`-- icml2026_PCP_camera_ready.pdf
 ```
 
 ## Environment
 
-The classification experiments require a CUDA-enabled PyTorch setup because
-the provided ImageNet evaluation code moves models and batches to CUDA.
-Regression and CQR scripts select CUDA when available and otherwise use CPU.
-
-One possible setup is:
+The experiments were written for Python and PyTorch. A convenient setup is:
 
 ```bash
-conda create -n pt-vcp python=3.10 -y
-conda activate pt-vcp
+python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-For CUDA, install the PyTorch and torchvision builds matching your CUDA
-runtime if they differ from the default pip resolution.
+The main dependencies are `numpy`, `pandas`, `scipy`, `scikit-learn`,
+`torch`, `torchvision`, `Pillow`, `tqdm`, `matplotlib`, `plotly`, and
+`jupyter`.
 
-## Data
+## Data Preparation
 
-Data files and trained checkpoints are intentionally excluded by `.gitignore`.
-The local preparation folder may contain them, but they should not be committed
-to the public repository.
+Large datasets and trained checkpoints are intentionally not committed to the
+repository.
 
-### Regression and CQR
+### Regression Data
 
-Each of `ordinary_regression_task/`, `cqr/`, and `sim_local_cp/` has a
-`datasets/` directory with the loader and a short dataset note. Place the
-required files under the `datasets/` directory of the experiment family that
-you run:
+The regression experiments use MEPS-19, MEPS-20, MEPS-21, BIKE,
+BLOG-DATA, BIO, FACEBOOK-1, FACEBOOK-2, CONCRETE, and STAR.
 
-| Script identifier | Dataset |
-| --- | --- |
-| `meps_19`, `meps_20`, `meps_21` | Processed MEPS panels; follow `get_meps_data/README.md` |
-| `bike` | Bike Sharing (`bike_train.csv`) |
-| `blog_data` | BlogFeedback (`blogfeedback/blogData_train.csv`) |
-| `bio` | CASP (`CASP.csv`) |
-| `facebook_1`, `facebook_2` | Facebook Comment Volume feature variants |
-| `concrete` | Concrete Compressive Strength (`Concrete_Data.csv`) |
-| `star` | STAR (`STAR.csv`) |
+Raw input files should be placed under the corresponding module directory
+before running the preprocessing scripts:
 
-The regression scripts expect the processed MEPS filenames
-`meps_19_reg_fix.csv`, `meps_20_reg_fix.csv`, and `meps_21_reg_fix.csv`;
-rename or place the generated processed files accordingly.
+```text
+ordinary_regression_task/datasets/
+ordinary_regression_task/get_meps_data/
+cqr/datasets/
+cqr/get_meps_data/
+sim_local_cp/datasets/
+sim_local_cp/get_meps_data/
+```
 
-### ImageNet
+For each module that you plan to run, prepare the MEPS datasets with:
 
-Obtain the ImageNet validation set under its applicable license and arrange it
-in the `ImageFolder` layout:
+```bash
+cd ordinary_regression_task/get_meps_data
+python get_meps_data.py
+python get_meps_data_19.py
+python get_meps_data_20.py
+python get_meps_data_21.py
+```
+
+Repeat from `cqr/get_meps_data/` and `sim_local_cp/get_meps_data/` when
+running those independent experiment modules.
+
+Expected external regression files include:
+
+```text
+datasets/bike_train.csv
+datasets/blogfeedback/blogData_train.csv
+datasets/CASP.csv
+datasets/facebook/Features_Variant_1.csv
+datasets/facebook/Features_Variant_2.csv
+datasets/concrete_data.csv
+datasets/star.csv
+```
+
+### ImageNet Classification Data
+
+For the classification experiments, arrange ImageNet validation images as:
 
 ```text
 classification_task/imagenet_val/
 |-- n01440764/
-|   `-- *.JPEG
+|-- n01443537/
 `-- ...
 ```
 
-The experiments use all 50,000 validation images, with 10,000 sampled for
-calibration and the remaining 40,000 for evaluation.
+The classification scripts use torchvision pretrained model weights and
+require access to those weights if they are not already cached locally.
 
 ## Reproducing Experiments
 
-All commands below are executed from the corresponding experiment directory,
-because the scripts use relative dataset, model, and output paths.
+Commands below assume execution from the named experiment directory.
+Randomness is controlled by seed loops in the scripts.
 
-### Ordinary Regression
-
-The ordinary regression evaluation uses ten datasets, five random seeds,
-`alpha = 0.1`, and the paper's experiment-specific `p` and bias settings.
+### Synthetic Experiments: Table 1 and Figure 5
 
 ```bash
 cd ordinary_regression_task
-
-# Train mean models; writes checkpoints to model/
-python ordinary_regression_FitModel.py
-
-# Main and supplementary evaluations
-python PT_perturbation.py
-python larger_bias.py
-python ordinary_regression_ablation.py
-python interval_stability.py
-python group_coverage.py
-
-# Synthetic illustrations
-python simulation_guassian.py
 python simulation_subgaussian.py
+python simulation_guassian.py
 ```
 
-Key stored artifacts include:
+The supplied summaries have been organized in
+`ordinary_regression_task/simulation_ablation/`. The filename
+`simulation_guassian.py` retains the spelling used by the original
+experiment code.
 
-| Output | Description |
-| --- | --- |
-| `ordinary_regression_task/pt_result/` | PT-VCP coverage and length outputs |
-| `ordinary_regression_task/larger_bias/table2_larger_bias_alpha0.1_p0.96.csv` | Larger-bias comparison |
-| `ordinary_regression_task/interval_stability_results/` | Randomization stability |
-| `ordinary_regression_task/group_coverage_result/` | Group coverage outputs |
-| `ordinary_regression_task/ablation_study_result/` | Ablation outputs |
+### Marginal and Group Coverage: Figure 1 and Table 8
 
-### Localized-CP-Like Stability Comparison
+```bash
+cd ordinary_regression_task
+mkdir -p cvg_result
+python ordinary_regression_cvg.py
+python group_coverage.py
+```
 
-This experiment trains separate conditional scale functions and measures
-variation over repeated training of `sigma(x)`.
+The current checked-in configuration of `group_coverage.py` runs BIKE, which
+supports Figure 1 and the BIKE entries of Table 8. The manuscript also reports
+STAR and MEPS group-coverage results; those require enabling the additional
+datasets in the script and regenerating their result files.
+
+### Regression Length Experiments: Tables 2, 6, and 7
+
+Train point prediction models:
+
+```bash
+cd ordinary_regression_task
+python ordinary_regression_FitModel.py
+```
+
+Run the relaxed-PT and larger-bias supplementary experiments:
+
+```bash
+python PT_perturbation.py
+python larger_bias.py
+```
+
+`PT_perturbation.py` corresponds to Table 6 with `epsilon = 0.01`.
+`larger_bias.py` corresponds to Table 7 and writes the supplied
+`larger_bias/table7_larger_bias_alpha0.1_p0.96.csv` summary.
+
+The folder contains the core VCP/PT-VCP training and evaluation code used for
+the real-data study, but this snapshot does not contain a single command or
+precomputed summary table that directly emits the final Table 2 layout.
+
+### Interval Stability: Tables 3, 11, and 12
+
+For ordinary regression VCP/PT-VCP stability:
+
+```bash
+cd ordinary_regression_task
+python interval_stability.py
+```
+
+This command writes the consolidated VCP/PT-VCP summary to
+`interval_stability_results/table3_interval_stability_vcp_ptvcp.csv`.
+
+For the Localized-CP comparison in Table 3:
 
 ```bash
 cd sim_local_cp
@@ -169,78 +238,114 @@ python ordinary_regression_FitModel.py
 python ordinary_regression_sigma_interval_stability.py
 ```
 
-New runs write the summary to
-`sim_local_cp/interval_stability_results/sigma_interval_stability_summary.csv`;
-the currently provided summary is also retained at
-`sim_local_cp/sigma_interval_stability_summary.csv`.
-
-### Conformalized Quantile Regression
+For CQR/PT-CQR stability:
 
 ```bash
 cd cqr
-
-# Train quantile models; writes checkpoints to cqr_model/
 python cqr_FitModel.py
-
-python cqr_ablation.py
 python Stability_cqr.py
 ```
 
-The ablation script writes to `cqr/cqr_ablation_result/`. A new stability run
-writes `cqr/std_results.csv`; the provided organized stability summary is
-`cqr/interval_stability_results.csv`.
-
-### ImageNet Classification
-
-The supplied classifiers are torchvision pretrained models; downloading
-weights may require network access on the first run. The experiment code
-requires a CUDA device.
+For RAPS/PT-RAPS stability:
 
 ```bash
 cd classification_task
-
-# RAPS versus PT-RAPS coverage and set size.
-# Select the model by editing model_name in cvg_len_cls.py.
-python cvg_len_cls.py
-
-# P-value criteria for all nine classifiers.
-python p_value_criteria.py
-
-# Set-size stability experiment.
 python interval_stability_cls.py
 ```
 
-The p-value run uses nine torchvision architectures, five seeds,
-`alpha = epsilon = 0.1`, `p = 0.95`, `pt_bias = 40`,
-`pt_index_range = 300`, and smoothed p-values. Stored summaries are provided
-under `classification_task/p_value_result/`.
+The supplied classification summary contains all nine architectures reported
+in Table 12. In the current script, only `ResNet18` is enabled by default;
+enable the remaining model names to regenerate the complete table.
 
-## Provided Results
+### Classification: Tables 4, 9, and 10
 
-The repository includes small CSV/Markdown result summaries and plotting
-material, while omitting input datasets and checkpoint files. In particular:
+```bash
+cd classification_task
+python cvg_len_cls.py
+python p_value_criteria.py
+```
 
-- `classification_task/p_value_result/all_models_p_value_criteria_summary.csv`
-  collects the ImageNet p-value criteria for all evaluated classifiers.
-- `ordinary_regression_task/larger_bias/` contains the generated larger-bias
-  result table.
-- `sim_local_cp/sigma_interval_stability_summary.csv` contains the provided
-  localized-CP-like stability summary.
-- `plt/` contains plotting notebooks and exported PDF figures.
+`cvg_len_cls.py` evaluates one selected architecture at a time through its
+`model_name` setting. The supplied Table 4 result files are organized under
+`cvg_len_result/`.
+
+`p_value_criteria.py` generates p-value criterion summaries. New runs are
+written to `p_value_result_full/` by the current script, while the supplied
+paper-facing results are organized under `p_value_result/`.
+
+### CQR and Ablation Studies: Table 5 and Figures 6-15
+
+```bash
+cd cqr
+python cqr_FitModel.py
+python cqr_ablation.py
+
+cd ../ordinary_regression_task
+python ordinary_regression_ablation.py
+```
+
+The checked-in CQR code provides model fitting, ablation, and stability
+experiments. It does not currently include one consolidated exporter for the
+Table 5 presentation in the manuscript.
+
+Plotting notebooks and exported PDFs for the ablation figures are provided
+under `plt/ablation_study/`.
+
+## Release Notes and Known Gaps
+
+The repository records the experiment code and supplied result artifacts for
+the updated manuscript. Before producing a final archival release, the
+following items should be reconciled:
+
+- Add a direct Table 2 reproduction script or an explicitly checked-in
+  consolidated result table.
+- Add a direct consolidated Table 5 exporter/result if that table is expected
+  to be reproducible from one command.
+- Regenerate and include STAR and MEPS outputs for Table 8, or state explicitly
+  that only the BIKE group-coverage example is distributed.
+- Reconcile the hard-coded dataset lists in
+  `ordinary_regression_ablation.py` and `cqr_ablation.py` with the supplied
+  BIKE ablation artifacts.
+- Enable all nine architectures in `interval_stability_cls.py` when
+  regenerating Table 12 from scratch.
+- Confirm the ordinary-regression `p` setting used for Table 2 against the
+  manuscript text; the supplementary Table 6 and Table 7 scripts encode
+  `p = 0.96`, consistent with their table settings.
+
+## Supplied Result Artifacts
+
+The repository includes lightweight result summaries and paper-facing figures:
+
+```text
+classification_task/cvg_len_result/
+classification_task/p_value_result/
+classification_task/std_results/
+cqr/cqr_ablation_result/
+cqr/interval_stability_results.csv
+ordinary_regression_task/ablation_study_result/
+ordinary_regression_task/group_coverage_result/
+ordinary_regression_task/interval_stability_results/
+ordinary_regression_task/larger_bias/
+ordinary_regression_task/pt_result/
+ordinary_regression_task/simulation_ablation/
+sim_local_cp/sigma_interval_stability_summary.csv
+plt/
+```
+
+Raw datasets, ImageNet images, model checkpoints, and local cache files are
+excluded through `.gitignore`.
 
 ## Acknowledgements
 
-The ImageNet conformal-classification implementation builds on:
-
-- Angelopoulos, Bates, Jordan, and Malik. *Uncertainty Sets for Image
-  Classifiers using Conformal Prediction*. ICLR, 2021.
-
-The CQR code builds on:
+The CQR experiments include code adapted from the public CQR implementation:
 
 - Romano, Patterson, and Candes. *Conformalized Quantile Regression*.
-  NeurIPS, 2019.
+- https://github.com/yromano/cqr
+
+Please also follow the original licenses and terms of all datasets and
+pretrained torchvision models used in the experiments.
 
 ## Citation
 
-Please cite the ICML 2026 paper when using this code. A finalized BibTeX
-entry can be added after the proceedings metadata is published.
+Please cite the ICML 2026 paper when using this code. A BibTeX entry can be
+added here once the final proceedings metadata is available.

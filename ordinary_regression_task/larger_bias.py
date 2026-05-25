@@ -191,15 +191,15 @@ for dataset_name in dataset_names:
         np.mean(len_pcp_seed), np.std(len_pcp_seed),
     ])
 
-summary_csv = f'{result_dir}/table2_larger_bias_alpha0.1_p0.96.csv'
+summary_csv = f'{result_dir}/table7_larger_bias_alpha0.1_p0.96.csv'
 with open(summary_csv, mode='w', newline='') as file:
     writer = csv.writer(file)
     writer.writerow([
         'dataset', 'bias',
         'vcp_coverage_mean', 'vcp_coverage_std',
         'vcp_length_mean', 'vcp_length_std',
-        'pcp_coverage_mean', 'pcp_coverage_std',
-        'pcp_length_mean', 'pcp_length_std'
+        'pt_vcp_coverage_mean', 'pt_vcp_coverage_std',
+        'pt_vcp_length_mean', 'pt_vcp_length_std'
     ])
     for row in summary_rows:
         writer.writerow(row)
@@ -224,11 +224,11 @@ ordered_dataset = [
 
 row_map = {row[0]: row for row in summary_rows}
 md_lines = []
-md_lines.append('# Table 2 Style Results (larger bias, p = 0.96)')
+md_lines.append('# Table 7 (larger bias)')
 md_lines.append('')
-md_lines.append('**Caption.** Comparison of performance between VCP and PCP in regression tasks across different datasets at fixed `alpha = 0.1` and `p = 0.96`, using a larger bias setting to amplify the interval-length contrast. Values are reported as `mean +/- std` over 5 random seeds. Bold marks the smaller value in the two length columns for each dataset.')
+md_lines.append('**Caption.** Comparison of performance between VCP and PT-VCP in regression tasks across different datasets at fixed `alpha = 0.1` and `p = 0.96`, using a larger bias setting to amplify the interval-length contrast. Values are reported as `mean +/- std` over 5 random seeds. Bold marks the smaller value in the two length columns for each dataset.')
 md_lines.append('')
-md_lines.append('| Dataset | Bias | VCP Coverage | VCP Length | PCP Coverage | PCP Length |')
+md_lines.append('| Dataset | Bias | VCP Coverage | VCP Length | PT-VCP Coverage | PT-VCP Length |')
 md_lines.append('|---|---:|---:|---:|---:|---:|')
 
 for ds in ordered_dataset:
@@ -248,7 +248,7 @@ for ds in ordered_dataset:
         f'{pcp_cvg_mean:.3f} +/- {pcp_cvg_std:.3f} | {pcp_len_text} |'
     )
 
-summary_md = f'{result_dir}/table2_larger_bias_alpha0.1_p0.96.md'
+summary_md = f'{result_dir}/table7_larger_bias_alpha0.1_p0.96.md'
 with open(summary_md, mode='w', newline='', encoding='utf-8') as file:
     file.write('\n'.join(md_lines) + '\n')
 

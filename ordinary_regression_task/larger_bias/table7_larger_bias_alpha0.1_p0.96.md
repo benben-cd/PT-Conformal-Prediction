@@ -1,8 +1,8 @@
-# Table 2 (larger bias)
+# Table 7 (larger bias)
 
 **Caption.** Comparison of performance between VCP and PT-VCP in regression tasks across different datasets at fixed `alpha = 0.1` and `p = 0.96`, using a larger bias setting to amplify the interval-length contrast. Values are reported as `mean +/- std` over 5 random seeds. Bold marks the smaller (better) value in the two length columns for each dataset.
 
-| Dataset | Bias | VCP Coverage | VCP Length | PCP Coverage | PCP Length |
+| Dataset | Bias | VCP Coverage | VCP Length | PT-VCP Coverage | PT-VCP Length |
 |---|---:|---:|---:|---:|---:|
 | MEPS-19 | 80 | 0.900 +/- 0.006 | 162.32 +/- 0.51 | 0.898 +/- 0.006 | **156.99 +/- 0.65** |
 | MEPS-20 | 80 | 0.900 +/- 0.005 | 161.96 +/- 0.26 | 0.901 +/- 0.003 | **156.62 +/- 0.65** |

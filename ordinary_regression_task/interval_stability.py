@@ -1,5 +1,6 @@
 import random
 import csv
+import os
 from sklearn.preprocessing import StandardScaler
 from importlib import reload
 
@@ -45,10 +46,11 @@ def compute_std(model, x_train, y_train, x_test, y_test, idx_cal, alpha=0.1, p=1
 
     return std
 
-csv_file = 'std_results.csv'
+os.makedirs('interval_stability_results', exist_ok=True)
+csv_file = 'interval_stability_results/table3_interval_stability_vcp_ptvcp.csv'
 with open(csv_file, mode='w', newline='') as file:
     writer = csv.writer(file)
-    writer.writerow(['Dataset', 'stability_VCP', 'stability_VCP_std', 'stability_PCP', 'stability_PCP_std'])
+    writer.writerow(['Dataset', 'stability_VCP', 'stability_VCP_std', 'stability_PT_VCP', 'stability_PT_VCP_std'])
 
     alpha = 0.1
     p = 0.95
@@ -142,7 +144,7 @@ with open(csv_file, mode='w', newline='') as file:
 
 
         stability_VCP = np.mean(std_list_VCP)
-        stability_PCP = np.mean(std_list_PCP)
+        stability_PT_VCP = np.mean(std_list_PCP)
         stability_VCP_std = np.std(std_list_VCP) / np.sqrt(5)
-        stability_PCP_std = np.std(std_list_PCP) / np.sqrt(5)
-        writer.writerow([dataset_name, stability_VCP, stability_VCP_std, stability_PCP, stability_PCP_std])
+        stability_PT_VCP_std = np.std(std_list_PCP) / np.sqrt(5)
+        writer.writerow([dataset_name, stability_VCP, stability_VCP_std, stability_PT_VCP, stability_PT_VCP_std])
