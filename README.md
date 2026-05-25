@@ -298,8 +298,20 @@ The CQR experiments include code adapted from the public CQR implementation:
 - Romano, Patterson, and Candes. *Conformalized Quantile Regression*.
 - https://github.com/yromano/cqr
 
+The RAPS-based classification experiments include code adapted from:
+
+- Angelopoulos, Bates, Jordan, and Malik. *Uncertainty Sets for Image Classifiers using Conformal Prediction*.
+- https://github.com/aangelopoulos/conformal_classification
+
 Please also follow the original licenses and terms of all datasets and
 pretrained torchvision models used in the experiments.
+
+## License
+
+This repository is released under the [MIT License](./LICENSE). Portions of
+the CQR and conformal classification experiments are adapted from
+MIT-licensed projects; their original notices are retained in
+[THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md).
 
 ## Citation
 
